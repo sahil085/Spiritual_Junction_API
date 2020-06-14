@@ -13,10 +13,16 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name="user")
 @Embeddable
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public  class User extends BaseModel implements Serializable,UserDetails {
 
     /**
@@ -34,6 +40,9 @@ public  class User extends BaseModel implements Serializable,UserDetails {
     @Column(nullable = false)
     @JsonIgnore
     private String password;
+
+    @JsonIgnore
+    private String provider;
 
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
