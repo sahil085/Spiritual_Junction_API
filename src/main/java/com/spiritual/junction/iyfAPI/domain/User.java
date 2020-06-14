@@ -15,43 +15,50 @@ import org.springframework.security.core.userdetails.UserDetails;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
-@Table(name="user")
+@Table(name = "user")
 @Embeddable
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public  class User extends BaseModel implements Serializable,UserDetails {
+@Getter
+@Setter
+public class User extends BaseModel implements Serializable, UserDetails {
 
+    private String firstName;
+    private String lastName;
+    private Long number;
+    private String profession;
+    private String gender;
+    private String college;
+    private String areaOfResidence;
+    private Integer age;
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    private Set<Role> roles = new HashSet<>();
     /**
      * Description of the property id.
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @Column(nullable = false)
     private String username;
     @Column(nullable = false)
     private String email;
-
     @Column(nullable = false)
     @JsonIgnore
     private String password;
-
     @JsonIgnore
     private String provider;
-
-
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
-    Set<Role> roles = new HashSet<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<SimpleGrantedAuthority> auths = new java.util.ArrayList<SimpleGrantedAuthority>();
-        Set<Role> roleSet=getRoles();
+        Set<Role> roleSet = getRoles();
         roleSet.forEach(role ->
                 auths.add(new SimpleGrantedAuthority(role.getRole())
                 )
@@ -59,15 +66,14 @@ public  class User extends BaseModel implements Serializable,UserDetails {
         return auths;
     }
 
+    @Override
+    public String getPassword() {
+        return password;
+    }
 
     @Override
     public String getUsername() {
         return username;
-    }
-
-    @Override
-    public String getPassword() {
-        return password;
     }
 
     @Override
@@ -94,35 +100,4 @@ public  class User extends BaseModel implements Serializable,UserDetails {
         return true;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public Set<Role> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
-    }
 }

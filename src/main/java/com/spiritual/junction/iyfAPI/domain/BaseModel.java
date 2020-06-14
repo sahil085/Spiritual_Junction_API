@@ -97,9 +97,9 @@ public class BaseModel {
                     return (String) authentication.getPrincipal();
                 }
             } catch (NullPointerException npe) {
-                return null;
+                return "SYSTEM";
             }
         }
-        return null;
+        return "SYSTEM";
     }
 }

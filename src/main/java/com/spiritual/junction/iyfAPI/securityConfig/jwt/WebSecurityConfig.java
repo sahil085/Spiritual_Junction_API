@@ -23,6 +23,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.spiritual.junction.iyfAPI.constants.AppConst;
 import com.spiritual.junction.iyfAPI.constants.RoleConstant;
 import com.spiritual.junction.iyfAPI.domain.Role;
 import com.spiritual.junction.iyfAPI.domain.User;
@@ -94,8 +95,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         if(userInfo1==null){
             User userInfo = new User();
             userInfo.setEmail("sahil.verma@tothenew.com");
+            userInfo.setUsername("Sahil Verma");
+            userInfo.setCollege("ABES EC");
+            userInfo.setAreaOfResidence("Ghaziabad");
+            userInfo.setGender("MALE");
+            userInfo.setFirstName("Sahil");
+            userInfo.setLastName("Verma");
+            userInfo.setNumber(8920041231l);
+            userInfo.setAge(23);
+            userInfo.setProfession("Employee");
+            userInfo.setProvider(AppConst.Providers.CUSTOM);
             userInfo.setPassword(new BCryptPasswordEncoder().encode("igdefault"));
-            userInfo.setUsername("sahil verma");
             Set<Role> roles = new HashSet<>();
             Role role = roleRepository.findByRole(RoleConstant.ROLE_ADMIN);
             roles.add(role);
@@ -117,7 +127,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         // We don't need CSRF for this example
         httpSecurity.csrf().disable()
                 // dont authenticate this particular request
-                .authorizeRequests().antMatchers("/authenticate","/social-login", "/register","/endSession").permitAll().
+                .authorizeRequests().antMatchers("/authenticate","/social-login", "/register","/endSession","/data/**").permitAll().
                 // all other requests need to be authenticated
                         anyRequest().authenticated().and().
                 // make sure we use stateless session; session won't be used to
