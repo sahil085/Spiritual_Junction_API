@@ -1,5 +1,7 @@
 package com.spiritual.junction.iyfAPI.service;
 
+import javax.annotation.PostConstruct;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Service;
 import com.spiritual.junction.iyfAPI.co.UserDetailsCO;
 import com.spiritual.junction.iyfAPI.constants.AppConst;
 import com.spiritual.junction.iyfAPI.constants.RoleConstant;
+import com.spiritual.junction.iyfAPI.domain.Course;
 import com.spiritual.junction.iyfAPI.domain.Role;
 import com.spiritual.junction.iyfAPI.domain.User;
 import com.spiritual.junction.iyfAPI.repository.RoleRepository;
@@ -62,5 +65,12 @@ public class CustomDataService {
 
     private String getDefaultPassword(UserDetailsCO userDetailsCO) {
         return userDetailsCO.getEmail().substring(0, 4) + userDetailsCO.getFirstName().substring(0, 2) + "default";
+    }
+
+    /* Create Inner Development Course with sessions */
+    @PostConstruct
+    public void createCourse(){
+        Course course = new Course();
+        course
     }
 }
