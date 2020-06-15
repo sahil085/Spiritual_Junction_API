@@ -4,12 +4,13 @@ import javax.persistence.Embeddable;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
-@Builder
 @Embeddable
 public class CourseCriteria {
 
-    Long passingPercentage;
-    Long minimumSessionAttended;
+
+    Integer passingPercentage;
+    Integer minimumSessionAttended;
 }

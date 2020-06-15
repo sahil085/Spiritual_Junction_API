@@ -7,4 +7,10 @@ public interface AppConst {
         String GOOGLE   = "Google";
         String FACEBOOK = "Facebook";
     }
+
+    interface CourseType {
+        String ONLINE         = "Online";
+        String OFFLINE        = "Offline";
+        String ONLINE_OFFLINE = "Online + Offline";
+    }
 }

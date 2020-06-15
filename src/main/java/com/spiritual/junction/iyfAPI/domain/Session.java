@@ -11,12 +11,19 @@ import javax.persistence.OneToOne;
 import java.time.LocalDate;
 import java.util.List;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Builder
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Session extends BaseModel {
 
     @Id
@@ -28,6 +35,8 @@ public class Session extends BaseModel {
     LocalDate date;
     Integer   startTime;
     Integer   endTime;
+    //    AM or PM
+    String    timeType;
     @Embedded
     Speaker                   speaker;
     @OneToMany
