@@ -14,7 +14,6 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -40,6 +39,7 @@ public class Course extends BaseModel {
     LocalDate endDate;
     Integer   pricing;
     String    promoVideo;
+    Boolean   certification;
     @ElementCollection
     List<String>             features;
     @ElementCollection
@@ -47,7 +47,7 @@ public class Course extends BaseModel {
     @OneToMany(cascade = CascadeType.PERSIST)
     List<Session>            sessions;
     @Embedded
-    CourseCriteria           courseCriteria;
+    CertificateCriteria      certificateCriteria;
     @OneToMany
     List<CourseUserFeedback> userFeedBacks;
 }

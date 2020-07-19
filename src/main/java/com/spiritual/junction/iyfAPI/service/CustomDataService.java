@@ -9,6 +9,7 @@ import java.awt.font.TextLayout;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDate;
@@ -26,7 +27,6 @@ import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -38,7 +38,7 @@ import com.spiritual.junction.iyfAPI.co.UserDetailsCO;
 import com.spiritual.junction.iyfAPI.constants.AppConst;
 import com.spiritual.junction.iyfAPI.constants.RoleConstant;
 import com.spiritual.junction.iyfAPI.domain.Course;
-import com.spiritual.junction.iyfAPI.domain.CourseCriteria;
+import com.spiritual.junction.iyfAPI.domain.CertificateCriteria;
 import com.spiritual.junction.iyfAPI.domain.Participant;
 import com.spiritual.junction.iyfAPI.domain.ParticipantSession;
 import com.spiritual.junction.iyfAPI.domain.Role;
@@ -111,23 +111,24 @@ public class CustomDataService {
     }
 
     /* Create Inner Development Course with sessions */
+    /*Create check mate course just updating this method*/
     public void createCourse() {
         Course course = Course.builder()
-                .title("Inner Development")
-                .description("Through Vedic Wisdom")
-                .endDate(LocalDate.parse("07-06-2020", DateTimeFormatter.ofPattern("dd-MM-yyyy")))
-                .startDate(LocalDate.parse("03-06-2020", DateTimeFormatter.ofPattern("dd-MM-yyyy")))
+                .title("Check Mate")
+                .description("Happy family life")
+                .endDate(LocalDate.parse("18-06-2020", DateTimeFormatter.ofPattern("dd-MM-yyyy")))
+                .startDate(LocalDate.parse("19-06-2020", DateTimeFormatter.ofPattern("dd-MM-yyyy")))
                 .type(AppConst.CourseType.ONLINE)
                 .pricing(0)
                 .build();
-        CourseCriteria courseCriteria = new CourseCriteria();
-        courseCriteria.setMinimumSessionAttended(4);
-        courseCriteria.setPassingPercentage(51);
-        course.setCourseCriteria(courseCriteria);
-        LocalDate date = LocalDate.parse("03-06-2020", DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+        CertificateCriteria certificateCriteria = new CertificateCriteria();
+        certificateCriteria.setMinimumSessionAttended(2);
+        course.setCertificateCriteria(certificateCriteria);
+        LocalDate date = LocalDate.parse("18-06-2020", DateTimeFormatter.ofPattern("dd-MM-yyyy"));
         List<Session> sessionList = new ArrayList<>();
-        IntStream.range(0, 5).forEach(index -> {
-            sessionList.add(createSession(date.plusDays(index + 1), index + 1));
+        IntStream.range(0, 2).forEach(index -> {
+            Session session = createSession(date.plusDays(index + 1), index + 1);
+            sessionList.add(session);
         });
         course.setSessions(sessionList);
         courseRepository.save(course);
@@ -149,7 +150,7 @@ public class CustomDataService {
     public void uploadParticipantsDataWithSession(List<UserDetailsCO> userDetailsCOList) {
         Set<Participant> participantList = new ModelMapper().map(userDetailsCOList, new TypeToken<Set<Participant>>() {
         }.getType());
-        Session session = sessionRepo.findById(5l).get();
+        Session session = sessionRepo.findById(2l).get();
 
         participantList.forEach(participant1 -> {
             Participant participant = participantRepo.findByEmail(participant1.getEmail());
@@ -164,7 +165,7 @@ public class CustomDataService {
 
 
         });
-        log.info("data saved for session 2");
+        log.info("data saved for session 1");
     }
 
     public void send() throws IOException, MessagingException {
@@ -201,14 +202,14 @@ public class CustomDataService {
         // true = text/html
         helper.setText("Hi "+participant.getUsername()+"<br/><br/><b>ISKCON Youth Forum Ghaziabad</b> extends heartfelt thanks for your active and " +
                 "enthusiastic " +
-                "participation in the 5 Session series of " +
+                "participation in the 5 days session series of " +
                 "'<b>Inner Development Through Vedic Wisdom</b>' and wishing you all the best for the future ahead. \n" +
                         "<br/>" +
                         "<br/>" +
                         "To Stay in touch with us for regular updates\n<br/><br/>" +
                         "<b>Whatsapp</b>: https://chat.whatsapp.com/I0LFDm4qrr4HFvguh4eCZD\n<br/>" +
                         "<b>Instagram</b>: https://www.instagram.com/invites/contact/?i=18kb06litwtvf&utm_content=gx6ncm1\n<br/>" +
-                        "<b>Facebook</b>: https://www.facebook.com/EthiccraftGhaziabad <br/> <br/> regards<br/>//IYF Ghaziabad", true);
+                        "<b>Facebook</b>: https://www.facebook.com/EthiccraftGhaziabad <br/> <br/> Regards<br/>//IYF Ghaziabad", true);
 
         // hard coded a file path
         //FileSystemResource file = new FileSystemResource(new File("path/android.png"));
@@ -220,6 +221,9 @@ public class CustomDataService {
     }
 
     private InputStream getCertificate(Participant participant) throws IOException {
+//        int imgWidth = 2000;
+//        int imgHeight = 1414;
+
         int imgWidth = 1280;
         int imgHeight = 904;
         Resource resource = new ClassPathResource("cirtificate.jpeg");
@@ -246,8 +250,10 @@ public class CustomDataService {
         g.drawString(text, imgWidth / 2 - (int) textWidth / 2,
                 imgHeight / 2 + (int) textHeight / 2);
         g.setFont(z);
+//        g.drawString("Certificate No.", 1620, 1260);
         g.drawString("Certificate No.", 1010, 779);
         String certificateNumber = String.valueOf(participant.getPhoneNumber()).substring(0,5);
+//        g.drawString("IYF-"+certificateNumber, 1625, 1282);
         g.drawString("IYF-"+certificateNumber, 1025, 810);
         g.dispose();
 
@@ -255,6 +261,42 @@ public class CustomDataService {
         ImageIO.write(image, "jpeg", outStream);
         ImageIO.createImageInputStream(image);
         return new ByteArrayInputStream(outStream.toByteArray());
+    }
+
+    private void getCertificate() throws IOException {
+        int imgWidth = 2000;
+        int imgHeight = 1414;
+        Resource resource = new ClassPathResource("checkMateCertificate.png");
+
+        InputStream input = resource.getInputStream();
+        final BufferedImage image = ImageIO.read(input);
+
+        Graphics2D g = image.createGraphics();
+        Font h = new Font("Lato", Font.BOLD, 30);
+        Font z = new Font("ZapfDingbats", Font.PLAIN, 18);
+        g.setColor(Color.BLACK);
+        g.setFont(h);
+        String text = "Sahil Verma";
+
+        TextLayout textLayout = new TextLayout(text, g.getFont(),
+                g.getFontRenderContext());
+        double textHeight = textLayout.getBounds().getHeight();
+        double textWidth = textLayout.getBounds().getWidth();
+
+        g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+                RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+
+// Draw the text in the center of the image
+        g.drawString(text, imgWidth / 2 - (int) textWidth / 2,
+                imgHeight / 2 + (int) textHeight / 2);
+        g.setFont(z);
+        g.drawString("Certificate No.", 1620, 1260);
+        String certificateNumber = "12345";
+        g.drawString("IYF-"+certificateNumber, 1625, 1282);
+        g.dispose();
+
+        ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+        ImageIO.write(image, "png", new File("certi.png"));
     }
 
 }

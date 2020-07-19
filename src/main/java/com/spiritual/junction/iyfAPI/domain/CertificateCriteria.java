@@ -8,9 +8,9 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Embeddable
-public class CourseCriteria {
+public class CertificateCriteria {
 
-
-    Integer passingPercentage;
+      //TODO
+//    Integer passingPercentage;
     Integer minimumSessionAttended;
 }
